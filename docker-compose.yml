@@ -17,6 +17,7 @@ services:
       dockerfile: containers/rails/Dockerfile.dev
     environment:
       - BUNDLE_PATH=/bundle
+      - DEFAULT_HOST=.example.com
     tty: true
     stdin_open: true
     command: bundle exec rails s -b 0.0.0.0
