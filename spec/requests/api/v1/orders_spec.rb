@@ -36,7 +36,9 @@ describe 'Order API', type: :request  do
       let(:status) { 'preparing' }
 
       it do
-        expect { subject }.to change { Order.count }.by 1
+        expect { subject }.to change { Order.count }.by(1)
+                          .and change { OrderEvent.count }.by(1)
+        expect(OrderEvent.where(order_id: JSON.parse(response.body)['data']['id'], event_type: 'create_order').exists?).to be_truthy
       end
     end
 
@@ -56,8 +58,10 @@ describe 'Order API', type: :request  do
     let!(:order) { create(:order) }
 
     it do
-      expect { subject }.to change { Order.count }.by -1
+      expect { subject }.to change { Order.count }.by(-1)
+                        .and change { OrderEvent.count }.by(1)
       expect(Order.where(id: order.id).exists?).to be_falsy
+      expect(OrderEvent.where(order_id: order.id, event_type: 'delete_order').exists?).to be_truthy
     end
   end
 
@@ -70,8 +74,10 @@ describe 'Order API', type: :request  do
       let(:status) { 'ready' }
 
       it do
-        expect { subject }.to change { Order.count }.by 0
+        expect { subject }.to change { Order.count }.by(0)
+                          .and change { OrderEvent.count }.by(1)
         expect(JSON.parse(response.body)['data']['status']).to eq 'ready'
+        expect(OrderEvent.where(order_id: order.id, event_type: 'put_order').exists?).to be_truthy
       end
     end
 
