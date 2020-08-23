@@ -49,6 +49,8 @@ After publishing, you can delete the outbox record.
 ```
 
 ## Setup
+![pattern](https://user-images.githubusercontent.com/17586662/90975437-21d59f00-e56f-11ea-8b66-5aa68305f0de.png)
+
 ### 1: terraform
 create aws resources(SNS and SQS).
 
