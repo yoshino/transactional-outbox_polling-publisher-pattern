@@ -49,17 +49,23 @@ After publishing, you can delete the outbox record.
 ```
 
 ## Setup
-### 1: Create SNS topic
-You need create SNS topic and use the arn at step3.
+### 1: terraform
+create aws resources(SNS and SQS).
 
-### 2: Create SQS
-You need create SQS and the subscribe the SNS topic at step2
+```
+$ cd terrafrom
+$ terraform init
+$ terraform plan
+$ terraform apply
+```
 
-※ [you can select endpoints other than SQS.](https://docs.aws.amazon.com/sns/latest/api/API_Subscribe.html).
 
-### 3: SNS client setting
+### 2: application
+setup ENV.
 
-`settings.local.yml`
+```
+$ touch config/settings.local.yml
+```
 
 ```
 aws:
@@ -69,13 +75,30 @@ aws:
   sns_topic_arn: YOUR_SNS_TOPIC_ARN
 ```
 
-### 4: application
+※ sns_topic_arn: arn:aws:sns:<YOUR_REGION>:<YOUR_ACCOUNT_ID>:OrderChanged
+
+
+build and run application.
+
 ```
 $ docker-compose build
-$ docker-compose run app bundle install
 $ docker-compose run app rails db:setup
 $ docker-compose up
 ```
+
+## Test
+### 1: request POST /orders
+- 1-1: create Order
+- 1-2: create OrderEvent
+
+### 2: polling worker publish the Event
+- 2-1: polling worker publish the event to SNS form OrderEvent record
+- 2-2: polling worker destroy the OrderEvent record
+
+### 3: Another Service can use the event data by SQS
+you can see the SQS message of the event in AWS console.
+
+
 
 ## Reference
 - [Pattern: Transactional outbox](https://microservices.io/patterns/data/transactional-outbox.html)

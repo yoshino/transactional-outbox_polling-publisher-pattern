@@ -29,3 +29,9 @@
 config/settings.local.yml
 config/settings/*.local.yml
 config/environments/*.local.yml
+
+# terraform
+terrafrom/.terraform/*
+terrafrom/terraform.auto.tfvars
+terrafrom/terraform.tfstate
+terrafrom/terraform.tfstate.backup
